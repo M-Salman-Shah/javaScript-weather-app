@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      box-sizing: border-box;
+    }
+
+    .app-container {
+      width: 400px;
+      margin: auto;
+      padding: 20px;
+      margin-top: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+
+    #cityInput {
+      width: 342px;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    #searchBtn {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #searchBtn:hover {
+      background-color: #0056b3;
+    }
+
+    #weatherResult {
+      margin: 20px 0;
+      font-size: 1.2em;
+    }
+
+    /* custom styling */
+    .center {
+      text-align: center;
+      align-items: center;
+    }
+
+    .heading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer {
+      text-align: center;
+      background-color: black;
+      color: white;
+      padding: 1px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <h1>Weather App</h1>
+    <input type="text" id="cityInput" placeholder="Enter city name e.g, lahore">
+    <button id="searchBtn">Search</button>
+  </div>
+
+
+  
+  <div id="weatherResult"></div>
+
+
+
+  <footer class="footer">
+    <p>Weather data is given by
+      <a href="https://api.openweathermap.org/data/2.5/weather" target="_blank">api.openweathermap.org</a>
+    </p>
+  </footer>
+
+
+  <!-- JacaScript -->
+  <script src="script.js">
+    "use strict";
+    const apiKey = '3647783b95cfa6aba97e7987122c9cc6'; // Replace with your API key
+    const apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const city = document.getElementById('cityInput').value.trim();
+      if (city) {
+        getWeather(city); // function call
+      } else {
+        alert('Please enter a city name');
+      }
+      document.getElementById('cityInput').value = "";
+    });
+
+    async function getWeather(city) {
+      try {
+        const response = await fetch(`${apiUrl}?q=${city}&appid=${apiKey}`);
+        //console.log(response);
+        if (!response.ok) throw new Error('City not found !');
+
+        const data = await response.json();
+        displayWeather(data);
+      } catch (error) {
+        document.getElementById('weatherResult').innerText = error.message;
+      }
+    }
+
+    function displayWeather(data) {
+      const { name, main, weather, visibility, wind, rain, clouds } = data;
+      const weatherIcon = `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
+
+      document.getElementById('weatherResult').innerHTML = `
+    <div class="center">
+        <div class="heading">
+            <h1>${name}</h1>
+            <img src="${weatherIcon}" alt="${weather[0].description}">
+        </div>
+        <p><strong>Temperature:</strong> ${main.temp}°C</p>
+        <p><strong>Feels Like:</strong> ${main.feels_like}°C</p>
+        <p><strong>Humidity:</strong> ${main.humidity}%</p>
+        <p><strong>Condition:</strong> ${weather[0].description}</p>
+        <p><strong>Pressure:</strong> ${main.pressure} hPa</p>
+        <p><strong>Visibility:</strong> ${visibility} meters</p>
+        <p><strong>Wind Speed:</strong> ${wind.speed} m/s</p>
+        <p><strong>Wind Direction:</strong> ${wind.deg}°</p>
+        <p><strong>Rain (last hour):</strong> ${rain?.["1h"] ?? 'No data'} mm</p>
+        <p><strong>Cloudiness:</strong> ${clouds.all}%</p>
+    </div>
+  `;
+    }
+
+
+    const num = new Number(123);
+    console.log(typeof (num)); // 123
+
+    console.log(num.valueOf()); // 123
+
+    const myfun = () => {
+      console.log('hello');
+    }
+    myfun();
+  </script>
+</body>
+
+</html>
